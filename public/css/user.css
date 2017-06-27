@@ -1,9 +1,182 @@
-.page-header {
-    height: 80px;
-    line-height: 80px;
+body {
+    font-family: "Microsoft YaHei UI", sans-serif;
+    font-size: 12px;
+    background: #EFEFEF;
+}
+
+a.hover {
+    text-decoration: none;
+}
+
+a.hover:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.header {
+    height: 112px;
+    line-height: 112px;
     color: #999;
     margin: 0 auto;
     width: 100%;
 }
 
-.top-nav {}
+.top-nav {
+    height: 32px;
+    line-height: 32px;
+    color: #DDD;
+    background: #333;
+}
+
+.top-nav a {
+    color: #DDD;
+}
+
+.top-nav-wrap {
+    width: 980px;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.address {
+    margin-left: 16px;
+    float: left;
+}
+
+.login-control {
+    margin-right: 16px;
+    float: right;
+}
+
+.register {
+    margin-right: 8px;
+}
+
+.login {
+    margin-left: 8px;
+}
+
+.middle-nav {
+    background: #FFF;
+    color: #454545;
+    font-size: 16px;
+    height: 80px;
+}
+
+.middle-nav-wrap {
+    width: 980px;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.logo {
+    margin-left: 8px;
+    height: 80px;
+    line-height: 80px;
+    float: left;
+}
+
+.selection {
+    margin-right: 8px;
+    float: right;
+    width: 700px;
+    height: 80px;
+    line-height: 80px;
+    height: 100%;
+}
+
+.selection>.selection-a {
+    margin-right: 80px;
+}
+
+.selection-a:hover {
+    cursor: pointer;
+    color: #777;
+}
+
+.search-box-wrap {
+    display: inline-block;
+    float: right;
+    width: 260px;
+    height: 80px;
+    line-height: 100%;
+    padding-top: 22px;
+}
+
+.content {
+    width: 980px;
+    margin: 20px auto;
+    background: #FFF;
+    padding: 32px 0;
+}
+
+.product {
+    width: 222px;
+    display: inline-block;
+    margin: 0 10px 0 10px;
+}
+
+.separate {
+    display: block;
+    width: 940px;
+    height: 1px;
+    background: #DDD;
+    margin: 32px;
+}
+
+.product img {
+    width: 200px;
+    height: 150px;
+    display: block;
+    margin: 32px auto 10px auto;
+}
+
+.product p {
+    margin-left: 20px;
+}
+
+.product:hover {
+    background: #EFEFEF;
+    cursor: pointer;
+}
+
+.rst-name {
+    color: #313131;
+    font-size: 16px;
+}
+
+.rst-address {
+    font-size: 12px;
+    color: #999;
+}
+
+.footer {
+    background: #FFF;
+    height: 80px;
+    margin-top: 40px;
+}
+
+.footer-wrap {
+    width: 980px;
+    margin: auto;
+}
+
+.footer a {
+    color: #777;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-block;
+    width: 242px;
+    text-align: center;
+    margin-top: 25px;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+    color: #AAA;
+}
+
+.modal-body>div {
+    width: 75%;
+    margin: 16px auto;
+}

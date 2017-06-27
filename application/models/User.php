@@ -35,11 +35,25 @@ class User {
 
   }
 */
-  public function createOrder() {
-
+  public function createOrder($user,$rst,$tel,$time,$arr) {
+//    if(!(in_array($user,$this->db->get('user')))||!(in_array($rst,$this->db->get('restaurant'))))
+//      return [false,'user or restaurant error'];
+    $total = 0.0;
+    foreach ($arr as $id=>$amount) {
+      $price = $this->db->select('price')
+          ->where('id', $id)
+          ->get('menu');
+      $total += $price * $amount;
+    }
+    $order=['custer_id'=>$user->id,'telephone'=>$tel,$user->addr,$time,]
+    $this->db->insert('order',)
   }
 
   public function cancelOrder($order) {
     
+  }
+
+  public function search($str) {
+
   }
 }

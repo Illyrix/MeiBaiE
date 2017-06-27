@@ -33,7 +33,12 @@ class UserApi extends BaseApi {
 	}
 
 	public function createOrder() {
-
+		$rst = $this->input->post('rstid');
+		$arr = json_decode($this->input->post('dishes'), true);
+		$user= $this->session['user']['userid'];
+		$time=time();
+		$info=$this->user->createOrder($user,$rst,$time,$arr);
+        
 	}
 
 	public function cancelOrder() {

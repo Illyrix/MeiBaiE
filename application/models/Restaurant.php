@@ -19,24 +19,12 @@ class Restaurant {
 
   private $reject_orders;
 
-  public function login() {
-
-  }
-
-  public function logout() {
-
-  }
-
-  public function register() {
-
-  }
-
-  public function updateInfo($key, $value) {
+  public function updateInfo($arr) {
 
   }
 
   public function updateDishes($dishes) {
-
+    
   }
 
   public function __get($name) {
@@ -47,5 +35,4 @@ class Restaurant {
 
   }
 
-  public function 
 }
