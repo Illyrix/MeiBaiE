@@ -28,7 +28,11 @@ class Restaurant {
   }
 
   public function __get($name) {
-    return $this->$name;
+    if (@!isset($this->$name)) {
+      return parent::__get($name);
+    }
+    else
+      return $this->$name;
   }
 
   public function acceptOrder($order) {

@@ -3,9 +3,11 @@
 abstract class BaseApi extends CI_Controller {
   public function __construct() {
 		parent::__construct();
+		date_default_timezone_set('Asia/Shanghai');
 		$this->load->library('session');
-		$this->load->model('user');
-    $this->load->model('restaurant');
+		$this->load->database();
+		$this->load->model('user', '', true);
+    	$this->load->model('restaurant', '', true);
 	}
 
   /**
@@ -25,13 +27,14 @@ abstract class BaseApi extends CI_Controller {
   /**
 	 * Log in
 	 */
-	public function login($type) {
+	public function login() {
+
 		if (!is_null($this->session['user'])) {
 			echo json_encode(['status' => false, 'msg' => 'already login']);
 			return;
 		}
 		
-		$log = $this->user->login($type, $this->input->post('acc'), $this->input->post('pwd'));
+		$log = $this->user->login($this->type, $this->input->post('acc'), $this->input->post('pwd'));
 		if (!$log) {
 			echo json_encode(['status' => false, 'msg' => 'account or password incorrect']);
 			return;
@@ -53,8 +56,8 @@ abstract class BaseApi extends CI_Controller {
 		}
 	}
 
-	public function register($type) {
-		$reg = $this->user->register($type, $this->input->post('acc'), $this->input->post('pwd'));
+	public function register() {
+		$reg = $this->user->register($this->type, $this->input->post('acc'), $this->input->post('pwd'));
 		if (!$reg) {
 			echo json_encode(['status' => false, 'msg' => 'account already exists']);
 			return;

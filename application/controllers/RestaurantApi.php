@@ -1,7 +1,14 @@
 <?php
 
+require_once(__DIR__.'./BaseApi.php');
+
 class RestaurantApi extends BaseApi {
   
+	public function __construct() {
+		parent::__construct();
+		$this->type = 'restaurant';
+	}
+
 	public function login() {
     parent::login('restaurant');
 	}
