@@ -28,19 +28,20 @@ class User extends CI_Model {
 
   }
 
-  public function register($acc, $pwd) {
-    
+  public function register($acc,$pwd,$tel,$addr,$location) {
+    $name=$this->db->select('name')->get('user')->result_array();
+    var_dump($name);
   }
 
-  public function login($acc, $pwd) {
-    if(!in_array($acc,$this->db->select('id')->get('user'))){
+  public function login($acc,$pwd) {
+    $hash=$this->db->select('password')->where('name',$acc)->get('user')->result_array();
+    if(empty($hash)){
       return false;
     }
-    $password=$this->db->select('password')->where('id',$acc)->get('user');
-    if($password==$pwd){
+    if(password_verify($pwd,$hash[0]['password'])){
       return true;
     }else return false;
-  }
+   }
 /*
   public function logout() {
 
@@ -67,7 +68,7 @@ class User extends CI_Model {
       $this->db->insert('order_menu',['order_id'=>$order_id,'amount'=>$amount,'food_id'=>$food_id]);
     }
   }
-  
+
   public function cancelOrder($order) {
     
   }

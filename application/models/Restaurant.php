@@ -1,6 +1,6 @@
 <?php
 
-class Restaurant {
+class Restaurant extends CI_Model{
   private $id;
 
   private $name;
@@ -18,6 +18,16 @@ class Restaurant {
   private $new_orders;
 
   private $reject_orders;
+
+  public function login($acc,$pwd) {
+    $hash=$this->db->select('password')->where('name',$acc)->get('restaurant')->result_array();
+    if(empty($hash)){
+      return false;
+    }
+    if(password_verify($pwd,$hash[0]['password'])){
+      return true;
+    }else return false;
+   }
 
   public function updateInfo($arr) {
 

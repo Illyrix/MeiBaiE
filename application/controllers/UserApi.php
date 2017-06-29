@@ -10,11 +10,13 @@ class UserApi extends BaseApi {
 	}
 
 	public function login() {
-    parent::login('user');
+    	//parent::login('user');
+		var_dump($this->user->login('唐僧','111111'));
 	}
 
 	public function register() {
-    parent::register('user');
+    	//parent::register('user');
+		$this->user->register('able','able','13619245164');
 	}
 
 	public function getInfo() {
@@ -32,7 +34,12 @@ class UserApi extends BaseApi {
 	}
 
 	public function updateInfo() {
+		
+	}
 
+	public function listRestaurants() {
+		$arr=$this->db->select(['name','telephone','address','picture','open_time','close_time'])->get('restaurant')->result_array();
+		echo json_encode($arr);
 	}
 
 	public function commentOrder() {
@@ -46,7 +53,7 @@ class UserApi extends BaseApi {
 		// $user= $this->session['user']['userid'];
 		 $time=time();
 		// $info=$this->user->createOrder($user,$rst,$time,$pst,$arr);
-        $info=$this->user->createOrder(3,2,19216800111,$time,'恶狠狠地放辣椒',[6=>3,8=>1,9=>2,12=>3]);
+        $info=$this->user->createOrder(3,2,'19216800111',$time,'恶狠狠地放辣椒',[6=>3,8=>1,9=>2,12=>3]);
 	}
 
 	public function cancelOrder() {
