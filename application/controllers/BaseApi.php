@@ -34,12 +34,12 @@ abstract class BaseApi extends CI_Controller {
 			return;
 		}
 		
-		$log = $this->user->login($this->input->post('acc'), $this->input->post('pwd'));
+		$log = $this->user->login($this->type, $this->input->post('acc'), $this->input->post('pwd'));
 		if (!$log) {
 			echo json_encode(['status' => false, 'msg' => 'account or password incorrect']);
 			return;
 		}
-
+		
 		echo json_encode(['status' => true]);
 		$this->session['user'] = $log;
 	}
@@ -62,7 +62,6 @@ abstract class BaseApi extends CI_Controller {
 			echo json_encode(['status' => false, 'msg' => 'account already exists']);
 			return;
 		}
-
 		echo json_encode(['status' => true]);
 		$this->session['user'] = $reg;
 	}
