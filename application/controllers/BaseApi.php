@@ -7,7 +7,8 @@ abstract class BaseApi extends CI_Controller {
 		$this->load->library('session');
 		$this->load->database();
 		$this->load->model('user', '', true);
-    	$this->load->model('restaurant', '', true);
+    $this->load->model('restaurant', '', true);
+		header('Access-Control-Allow-Origin: *');
 	}
 
   /**
