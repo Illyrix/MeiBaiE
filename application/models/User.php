@@ -29,14 +29,14 @@ class User extends CI_Model {
     $this->db->update('user', $arr);
   }
 
-  public function register($acc, $pwd, $gen, $tel, $addr, $mail, $loc) {
+  public function register($arr) {
     $name = $this->db->select('name')->get('user')->result_array();
     foreach ($name as $n){
-      if ($n['name']==$acc) return false;
+      if ($n['name']==$arr['name']) return false;
     }
-    $password = password_hash($pwd,PASSWORD_BCRYPT);
-    $time = time();
-    $this->db->insert('user',['name'=>$acc, 'password'=>$password, 'gender'=>$gen, 'telephone'=>$tel, 'address'=>$addr, 'e-mail'=>$mail, 'time'=>date('Y-m-d H:i:s', $time), 'location'=>$loc]);
+    // $password = password_hash($pwd,PASSWORD_BCRYPT);
+    // $time = time();
+    $this->db->insert('user',$arr);
     return true;
   }
 

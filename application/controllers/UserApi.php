@@ -24,8 +24,8 @@ class UserApi extends BaseApi {
 		$acc = $this->input->post('name');
 		$pwd = $this->input->post('password');
 		$res = $this->user->login($acc, $pwd);
-		$id = $this->db->select('id')->where('name', $acc)->get('user')->result_array();
 		if ($res){
+			$id = $this->db->select('id')->where('name', $acc)->get('user')->result_array();
 			$this->session->set_userdata('user_id', $id[0]['id']);
 			echo json_encode(['status' => true]);
 		}else echo json_encode(['status' => false]);
@@ -45,7 +45,10 @@ class UserApi extends BaseApi {
 		$addr = $this->input->post('address');
 		$mail = $this->input->post('e-mail');
 		$loc = $this->input->post('location');
-		$reg = $this->user->register($acc, $pwd, $gen, $tel, $addr, $mail, $loc);
+		$password = password_hash($pwd,PASSWORD_BCRYPT);
+		$time = time();
+		$arr = ['name'=>$acc, 'password'=>$password, 'gender'=>$gen, 'telephone'=>$tel, 'address'=>$addr, 'e-mail'=>$mail, 'time'=>date('Y-m-d H:i:s', $time), 'location'=>$loc];
+		$reg = $this->user->register($arr);
 		if (!$reg) {
 			echo json_encode(['status' => false, 'msg' => 'account already exists']);
 			return;
@@ -129,12 +132,11 @@ class UserApi extends BaseApi {
 	}
 
 	public function createOrder() {
-		// if (is_null($this->session['user'])) {
-		// 	echo json_encode(['status' => false, 'msg' => 'no user logged in']);
-		// 	return;
-		// }
-		// $acc = $this->session['user']['user_id'];
-		// $rst = $this->session['rst']['rst_id'];
+		if (is_null($this->session->userdata('user_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
+			return;
+		}
+		$user = $this->session->userdata('user_id');
 		$user = $this->input->post('user_id');
 		$rst = $this->input->post('rst_id');
 		$tel = $this->input->post('telephone');
@@ -143,7 +145,6 @@ class UserApi extends BaseApi {
 		$pst = $this->input->post('postscript');
 		$arr = json_decode($this->input->post('dishes'), true);
 		$info = $this->user->createOrder($user, $rst, $tel, $addr, $time, $pst, $arr);
-        // $info = $this->user->createOrder(3,2,'19216800111',$time,'恶狠狠地放辣椒',[6=>3,8=>1,9=>2,12=>3]);
 		// if (!$info) {
 		// 	echo json_encSode(['status' => false]);
 		// 	return;
@@ -153,11 +154,11 @@ class UserApi extends BaseApi {
 	}
 
 	public function cancelOrder() {
-		// if (is_null($this->session['user'])) {
-		// 	echo json_encode(['status' => false, 'msg' => 'no user logged in']);
-		// 	return;
-		// }
-		$user_id = $this->input->post('user_id');
+		if (is_null($this->session->userdata('user_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
+			return;
+		}
+		$user_id = $this->session->userdata('user_id');
 		$id = $this->input->post('id');
 		$arr = $this->db->select(['user_id', 'status'])->where('id', $id)->get('orders')->result_array();
     	if ($arr === []){

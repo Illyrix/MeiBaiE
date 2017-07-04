@@ -10,11 +10,34 @@ class RestaurantApi extends BaseApi {
 	}
 
 	public function login() {
-    parent::login('restaurant');
+    	if (!is_null($this->session->userdata('rst_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'Please first log out']);
+			return;
+		}
+		$acc = $this->input->post('name');
+		$pwd = $this->input->post('password');
+		$res = $this->restaurant->login($acc, $pwd);
+		if ($res){
+			$id = $this->db->select('id')->where('name', $acc)->get('restaurant')->result_array();
+			$this->session->set_userdata('rst_id', $id[0]['id']);
+			echo json_encode(['status' => true]);
+		}else echo json_encode(['status' => false]);
 	}
 
 	public function register() {
-    parent::register('restaurant');
+    	$acc = $this->input->post('name');
+		$pwd = $this->input->post('password');
+		$tel = $this->input->post('telephone');
+		$addr = $this->input->post('address');
+		$loc = $this->input->post('location');
+		$ot = $this->input->post('open_time');
+		$ct = $this->input->post('close_time');
+		$reg = $this->user->register($acc, $pwd, $gen, $tel, $addr, $mail, $loc);
+		if (!$reg) {
+			echo json_encode(['status' => false, 'msg' => 'account already exists']);
+			return;
+		}
+		echo json_encode(['status' => true]);
 	}
 
 	public function getInfo() {
