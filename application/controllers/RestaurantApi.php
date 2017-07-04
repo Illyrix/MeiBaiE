@@ -24,6 +24,11 @@ class RestaurantApi extends BaseApi {
 		}else echo json_encode(['status' => false]);
 	}
 
+	public function logout(){
+		$this->session->set_userdata('rst_id', null);
+		echo json_encode(['status' => true]);
+	}
+
 	public function register() {
     	$acc = $this->input->post('name');
 		$pwd = $this->input->post('password');
@@ -32,7 +37,9 @@ class RestaurantApi extends BaseApi {
 		$loc = $this->input->post('location');
 		$ot = $this->input->post('open_time');
 		$ct = $this->input->post('close_time');
-		$reg = $this->user->register($acc, $pwd, $gen, $tel, $addr, $mail, $loc);
+		$password = password_hash($pwd,PASSWORD_BCRYPT);
+		$arr = ['name' => $acc, 'password' => $password, 'telephone' => $tel, 'address' => $addr, 'location' => $loc, 'open_time' => $ot, 'close_time' => $ct];
+		$reg = $this->restaurant->register($arr);
 		if (!$reg) {
 			echo json_encode(['status' => false, 'msg' => 'account already exists']);
 			return;

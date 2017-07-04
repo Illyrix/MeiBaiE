@@ -34,8 +34,6 @@ class User extends CI_Model {
     foreach ($name as $n){
       if ($n['name']==$arr['name']) return false;
     }
-    // $password = password_hash($pwd,PASSWORD_BCRYPT);
-    // $time = time();
     $this->db->insert('user',$arr);
     return true;
   }

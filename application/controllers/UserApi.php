@@ -27,7 +27,9 @@ class UserApi extends BaseApi {
 		if ($res){
 			$id = $this->db->select('id')->where('name', $acc)->get('user')->result_array();
 			$this->session->set_userdata('user_id', $id[0]['id']);
-			echo json_encode(['status' => true]);
+			$info = $this->db->select(['name', 'gender', 'telephone', 'address', 'e-mail', 'time', 'location'])->where('id',$id[0]['id'])->get('user')->result_array();
+			echo json_encode(['status' => true, 'userdata' => $info[0]]);
+
 		}else echo json_encode(['status' => false]);
 	}
 
@@ -47,7 +49,7 @@ class UserApi extends BaseApi {
 		$loc = $this->input->post('location');
 		$password = password_hash($pwd,PASSWORD_BCRYPT);
 		$time = time();
-		$arr = ['name'=>$acc, 'password'=>$password, 'gender'=>$gen, 'telephone'=>$tel, 'address'=>$addr, 'e-mail'=>$mail, 'time'=>date('Y-m-d H:i:s', $time), 'location'=>$loc];
+		$arr = ['name' => $acc, 'password' => $password, 'gender' => $gen, 'telephone' => $tel, 'address' => $addr, 'e-mail' => $mail, 'time' => date('Y-m-d H:i:s', $time), 'location' => $loc];
 		$reg = $this->user->register($arr);
 		if (!$reg) {
 			echo json_encode(['status' => false, 'msg' => 'account already exists']);

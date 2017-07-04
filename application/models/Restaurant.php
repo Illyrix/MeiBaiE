@@ -37,6 +37,15 @@ class Restaurant extends CI_Model{
     }else return false;
    }
 
+   public function register($arr) {
+    $name = $this->db->select('name')->get('restaurant')->result_array();
+    foreach ($name as $n){
+      if ($n['name'] == $arr['name']) return false;
+    }
+    $this->db->insert('restaurant', $arr);
+    return true;
+  }
+
   public function updateInfo($id, $arr) {
     $this->db->where('id', $id);
     $this->db->update('restaurant', $arr);
