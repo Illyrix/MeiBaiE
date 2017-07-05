@@ -158,7 +158,7 @@ class UserApi extends BaseApi {
 		$addr = $this->input->post('address');
 		$time = time();
 		$pst = $this->input->post('postscript');
-		$arr = json_decode($this->input->post('dishes'), true);
+		$arr = $this->input->post('dishes');
 		$info = $this->user->createOrder($user, $rst, $tel, $addr, $time, $pst, $arr);
 		// if (!$info) {
 		// 	echo json_encSode(['status' => false]);
