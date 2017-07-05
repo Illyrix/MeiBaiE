@@ -203,6 +203,12 @@ class UserApi extends BaseApi {
 		echo json_encode($arr);
 	}
 
+	public function getRstInfo() {
+		$id = $this->input->post('id');
+		$arr = $this->db->select(['name', 'telephone', 'address', 'picture', 'location', 'open_time', 'close_time'])->where('id',$id)->get('restaurant')->result_array();
+		echo json_encode($arr[0]);
+	}
+
 	public function search(){
 		$str = $this->input->post('string');
 		$id_f = $this->db->select('rst_id')->like('name', $str)->get('menu')->result_array();
