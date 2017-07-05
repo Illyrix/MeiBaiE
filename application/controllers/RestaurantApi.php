@@ -10,7 +10,7 @@ class RestaurantApi extends BaseApi {
 	}
 
 	public function login() {
-    	if (!is_null($this->session->userdata('rst_id'))) {
+    	if (!is_null($this->session->userdata('user_id')) || !is_null($this->session->userdata('rst_id'))) {
 			echo json_encode(['status' => false, 'msg' => 'Please first log out']);
 			return;
 		}
@@ -20,7 +20,9 @@ class RestaurantApi extends BaseApi {
 		if ($res){
 			$id = $this->db->select('id')->where('name', $acc)->get('restaurant')->result_array();
 			$this->session->set_userdata('rst_id', $id[0]['id']);
-			echo json_encode(['status' => true]);
+			$this->session->set_userdata('rst_name', $acc);
+			$info = $this->db->select(['name', 'telephone', 'address', 'picture', 'location', 'open_time', 'close_time'])->where('id',$id[0]['id'])->get('restaurant')->result_array();
+			echo json_encode(['status' => true, 'rstdata' => $info[0]]);
 		}else echo json_encode(['status' => false]);
 	}
 
@@ -32,6 +34,10 @@ class RestaurantApi extends BaseApi {
 	public function register() {
     	$acc = $this->input->post('name');
 		$pwd = $this->input->post('password');
+		if (empty(trim($acc)) || empty(trim($pwd))){
+			echo json_encode(['status' => false]);
+			return;
+		}
 		$tel = $this->input->post('telephone');
 		$addr = $this->input->post('address');
 		$loc = $this->input->post('location');
@@ -44,6 +50,9 @@ class RestaurantApi extends BaseApi {
 			echo json_encode(['status' => false, 'msg' => 'account already exists']);
 			return;
 		}
+		$id = $this->db->select('id')->where('name', $acc)->get('restaurant')->result_array();
+		$this->session->set_userdata('rst_id', $id[0]['id']);
+		$this->session->set_userdata('rst_name', $acc);
 		echo json_encode(['status' => true]);
 	}
 
@@ -70,7 +79,7 @@ class RestaurantApi extends BaseApi {
 	}
 
 	public function listDishes() {
-		$id = $this->input->post('id');
+		$id = $this->session->userdata('rst_id');
 		$arr = $this->db->select(['name', 'picture', 'price', 'discount'])->where('rst_id',$id)->get('menu')->result_array();
 		echo json_encode($arr);
 	}

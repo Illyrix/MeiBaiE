@@ -16,13 +16,19 @@ abstract class BaseApi extends CI_Controller {
 	 * Return user info as a JSON string
 	 */
 	public function getLogged() {
-		if (is_null($this->session['user'])) 
+		if (is_null($this->session->userdata('user_id')) && is_null($this->session->userdata('rst_id'))) 
 			echo json_encode(['status' => false]);
+		else if (!is_null($this->session->userdata('user_id')))
+			echo json_encode([
+				'status' => true, 
+				 'type' => 'user',
+				'name' => $this->session->userdata('user_name')
+			]);
 		else
 			echo json_encode([
 				'status' => true, 
-				'type' => $this->session['user']['type'],
-				'name' => $this->session['user']['name']
+				 'type' => 'restaurant',
+				'name' => $this->session->userdata('rst_name')
 			]);
 	}
 

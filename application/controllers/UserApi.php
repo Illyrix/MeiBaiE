@@ -17,7 +17,7 @@ class UserApi extends BaseApi {
 
 	public function login() {
     	// parent::login('user');
-		if (!is_null($this->session->userdata('user_id'))) {
+		if (!is_null($this->session->userdata('user_id')) || !is_null($this->session->userdata('rst_id'))) {
 			echo json_encode(['status' => false, 'msg' => 'Please first log out']);
 			return;
 		}
@@ -27,9 +27,9 @@ class UserApi extends BaseApi {
 		if ($res){
 			$id = $this->db->select('id')->where('name', $acc)->get('user')->result_array();
 			$this->session->set_userdata('user_id', $id[0]['id']);
+			$this->session->set_userdata('user_name', $acc);
 			$info = $this->db->select(['name', 'gender', 'telephone', 'address', 'e-mail', 'time', 'location'])->where('id',$id[0]['id'])->get('user')->result_array();
 			echo json_encode(['status' => true, 'userdata' => $info[0]]);
-
 		}else echo json_encode(['status' => false]);
 	}
 
@@ -40,8 +40,12 @@ class UserApi extends BaseApi {
 
 	public function register() {
     	//parent::register('user');
-		$acc = $this->input->post('name');
 		$pwd = $this->input->post('password');
+		$acc = $this->input->post('name');
+		if (empty(trim($acc)) || empty(trim($pwd))){
+			echo json_encode(['status' => false]);
+			return;
+		}
 		$gen = $this->input->post('gender');
 		$tel = $this->input->post('telephone');
 		$addr = $this->input->post('address');
@@ -55,6 +59,9 @@ class UserApi extends BaseApi {
 			echo json_encode(['status' => false, 'msg' => 'account already exists']);
 			return;
 		}
+		$id = $this->db->select('id')->where('name', $acc)->get('user')->result_array();
+		$this->session->set_userdata('user_id', $id[0]['id']);
+		$this->session->set_userdata('user_name', $acc);
 		echo json_encode(['status' => true]);
 	}
 
