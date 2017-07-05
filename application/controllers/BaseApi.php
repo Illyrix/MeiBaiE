@@ -8,7 +8,9 @@ abstract class BaseApi extends CI_Controller {
 		$this->load->database();
 		$this->load->model('user', '', true);
     $this->load->model('restaurant', '', true);
-		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Origin: http://localhost:8080');
+		header("Access-Control-Allow-Methods: HEAD,POST,GET,PUT,DELETE,OPTIONS");
+		header('Access-Control-Allow-Credentials: true');
 		header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 	}
 
@@ -16,13 +18,14 @@ abstract class BaseApi extends CI_Controller {
 	 * Return user info as a JSON string
 	 */
 	public function getLogged() {
-		if (is_null($this->session['user'])) 
+		if (is_null($this->session->user)) 
 			echo json_encode(['status' => false]);
 		else
 			echo json_encode([
 				'status' => true, 
 				'type' => $this->session['user']['type'],
-				'name' => $this->session['user']['name']
+				'name' => $this->session['user']['name'],
+				'location' => $this->session['user']['location']
 			]);
 	}
 
