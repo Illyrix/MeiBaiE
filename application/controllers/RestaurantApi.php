@@ -90,7 +90,7 @@ class RestaurantApi extends BaseApi {
 	}
 
 	public function listDishes() {
-		if (is_null($this->session->userdata('rst_id'))) {''
+		if (is_null($this->session->userdata('rst_id'))) {
 			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
 			return;
 		}
