@@ -8,7 +8,9 @@ abstract class BaseApi extends CI_Controller {
 		$this->load->database();
 		$this->load->model('user', '', true);
     $this->load->model('restaurant', '', true);
-		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Origin: http://localhost:8080');
+		header("Access-Control-Allow-Methods: HEAD,POST,GET,PUT,DELETE,OPTIONS");
+		header('Access-Control-Allow-Credentials: true');
 		header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 	}
 
@@ -31,6 +33,7 @@ abstract class BaseApi extends CI_Controller {
 				 'type' => 1,
 				'name' => $this->session->userdata('rst_name'),
 				'location' => $this->session->userdata('rst_loc')
+
 			]);
 	}
 
