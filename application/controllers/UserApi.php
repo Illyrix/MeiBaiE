@@ -153,7 +153,6 @@ class UserApi extends BaseApi {
 			return;
 		}
 		$user = $this->session->userdata('user_id');
-		$user = $this->input->post('user_id');
 		$rst = $this->input->post('rst_id');
 		$tel = $this->input->post('telephone');
 		$addr = $this->input->post('address');
