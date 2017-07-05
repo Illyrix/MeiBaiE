@@ -8,7 +8,7 @@ class RestaurantApi extends BaseApi {
 		parent::__construct();
 		$this->type = 'restaurant';
 	}
-
+ 
 	public function login() {
     	if (!is_null($this->session->userdata('user_id')) || !is_null($this->session->userdata('rst_id'))) {
 			echo json_encode(['status' => false, 'msg' => 'Please first log out']);
@@ -90,12 +90,12 @@ class RestaurantApi extends BaseApi {
 	}
 
 	public function listDishes() {
-		if (is_null($this->session->userdata('rst_id'))) {
+		if (is_null($this->session->userdata('rst_id'))) {''
 			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
 			return;
 		}
 		$id = $this->session->userdata('rst_id');
-		$arr = $this->db->select(['name', 'picture', 'price', 'discount'])->where('rst_id',$id)->get('menu')->result_array();
+		$arr = $this->db->select(['id', 'name', 'picture', 'price', 'discount'])->where('rst_id',$id)->get('menu')->result_array();
 		echo json_encode($arr);
 	}
 
