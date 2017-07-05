@@ -84,6 +84,8 @@ class RestaurantApi extends BaseApi {
 		$ct = $this->input->post('close_time');
 		$this->restaurant->updateInfo($id, ['name' => $name, 'telephone' => $tel, 'address' => $addr, 'location' => $loc, 'open_time' => $ot, 'close_time' => $ct]);
 		$this->session->set_userdata('rst_name', $name);
+		$this->session->set_userdata('rst_loc', $loc);
+		$this->do_upload();
 		echo json_encode(['status' => true]);
 	}
 
@@ -97,6 +99,10 @@ class RestaurantApi extends BaseApi {
 		echo json_encode($arr);
 	}
 
+	public function updateDishes(){
+		
+	}
+
   /**
    * Return new orders, reject orders, accept orders
    */
@@ -106,12 +112,80 @@ class RestaurantApi extends BaseApi {
 			return;
 		}
 		$id = $this->session->userdata('rst_id');
-		$arr = $this->db->select(['user_id', 'telephone', 'address', 'price', 'discount'])->where('rst_id',$id)->get('orders')->result_array();
+		$arr = $this->db->select(['id', 'user_id', 'telephone', 'address', 'price', 'discount'])->where('rst_id',$id)->get('orders')->result_array();
 		
 	}
 
 	public function acceptOrder() {
+		if (is_null($this->session->userdata('rst_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
+			return;
+		}
+		$rst_id = $this->session->userdata('rst_id');
+		$id = $this->input->post('id');
+		$arr = $this->db->select(['rst_id', 'status'])->where('id', $id)->get('orders')->result_array();
+    	if ($arr === []){
+			echo json_encode(['status' => false, 'msg' => 'no such order']);
+			return;
+		}
+		if ($arr[0]['rst_id'] != $rst_id){
+			echo json_encode(['status' => false, 'msg' => 'incorrect user']);
+			return;
+		}
+		if ($arr[0]['status'] != 0){
+			echo json_encode(['status' => false, 'msg' => 'order cannot be accepted']);
+			return;
+		}
+		$this->restaurant->changeOrder($id, 2);
+		echo json_encode(['status' => true]);
+  	}
 
+	public function rejectOrder() {
+		if (is_null($this->session->userdata('rst_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
+			return;
+		}
+		$rst_id = $this->session->userdata('rst_id');
+		$id = $this->input->post('id');
+		$arr = $this->db->select(['rst_id', 'status'])->where('id', $id)->get('orders')->result_array();
+    	if ($arr === []){
+			echo json_encode(['status' => false, 'msg' => 'no such order']);
+			return;
+		}
+		if ($arr[0]['rst_id'] != $rst_id){
+			echo json_encode(['status' => false, 'msg' => 'incorrect user']);
+			return;
+		}
+		if ($arr[0]['status'] != 0){
+			echo json_encode(['status' => false, 'msg' => 'order cannot be rejected']);
+			return;
+		}
+		$this->restaurant->changeOrder($id, 3);
+		echo json_encode(['status' => true]);
+  	}
+
+	public function completeOrder() {
+		if (is_null($this->session->userdata('rst_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
+			return;
+		}
+		$rst_id = $this->session->userdata('rst_id');
+		$id = $this->input->post('id');
+		$arr = $this->db->select(['rst_id', 'status'])->where('id', $id)->get('orders')->result_array();
+    	if ($arr === []){
+			echo json_encode(['status' => false, 'msg' => 'no such order']);
+			return;
+		}
+		if ($arr[0]['rst_id'] != $rst_id){
+			echo json_encode(['status' => false, 'msg' => 'incorrect user']);
+			return;
+		}
+		if ($arr[0]['status'] != 2){
+			echo json_encode(['status' => false, 'msg' => 'order cannot be completed']);
+			return;
+		}
+		$this->restaurant->changeOrder($id, 4);
+		echo json_encode(['status' => true]);
   	}
 
   /**

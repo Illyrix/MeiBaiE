@@ -55,8 +55,9 @@ class Restaurant extends CI_Model{
     
   }
 
-  public function acceptOrder($order) {
-
+  public function changeOrder($id, $type) {
+    $this->db->where('id', $id);
+    $this->db->update('orders', ['status' => $type]);
   }
 
 }
