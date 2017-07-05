@@ -117,7 +117,7 @@ class UserApi extends BaseApi {
 	}
 
 	public function listRestaurants() {
-		$arr = $this->db->select(['name', 'telephone', 'address', 'picture', 'open_time', 'close_time'])->get('restaurant')->result_array();
+		$arr = $this->db->select(['id', 'name', 'telephone', 'address', 'picture', 'open_time', 'close_time'])->get('restaurant')->result_array();
 		echo json_encode($arr);
 	}
 
@@ -143,6 +143,7 @@ class UserApi extends BaseApi {
 			return;
 		}
 		$this->user->commentOrder($id, $text);
+
 		echo json_encode(['status' => true]);
 	}
 
@@ -198,7 +199,7 @@ class UserApi extends BaseApi {
 		// 	return;
 		// }
 		$rst = $this->input->post('rst_id');
-		$arr = $this->db->select(['name', 'picture', 'discount', 'price'])->where('rst_id', $rst)->get('menu')->result_array();
+		$arr = $this->db->select(['id', 'name', 'picture', 'discount', 'price'])->where('rst_id', $rst)->get('menu')->result_array();
 		echo json_encode($arr);
 	}
 

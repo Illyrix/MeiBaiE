@@ -104,11 +104,15 @@ class RestaurantApi extends BaseApi {
 		if (is_null($this->session->userdata('rst_id'))) {
 			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
 			return;
-		}''
+		}
 		$id = $this->session->userdata('rst_id');
-		$arr = $this->db->select(['user_id', 'name', 'picture', 'price', 'discount'])->where('rst_id',$id)->get('orders')->result_array();
+		$arr = $this->db->select(['user_id', 'telephone', 'address', 'price', 'discount'])->where('rst_id',$id)->get('orders')->result_array();
 		
 	}
+
+	public function acceptOrder() {
+
+  	}
 
   /**
    * poll this method to check if there are new orders

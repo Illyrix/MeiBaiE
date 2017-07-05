@@ -74,15 +74,11 @@ class User extends CI_Model {
 
   public function commentOrder($id, $text){
     $this->db->where('id', $id);
-    $this->db->update('orders', ['comment'=> $text]);
+    $this->db->update('orders', ['comment'=> $text, 'status' => 5]);
   }
 
   public function cancelOrder($id) {
     $this->db->where('id', $id);
-    $this->db->update('orders', ['status' => 3]);
-  }
-
-  public function search($str) {
-
+    $this->db->update('orders', ['status' => 1]);
   }
 }
