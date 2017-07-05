@@ -21,14 +21,16 @@ abstract class BaseApi extends CI_Controller {
 		else if (!is_null($this->session->userdata('user_id')))
 			echo json_encode([
 				'status' => true, 
-				 'type' => 'user',
-				'name' => $this->session->userdata('user_name')
+				'type' => 0,
+				'name' => $this->session->userdata('user_name'),
+				'location' => $this->session->userdata('user_loc')
 			]);
 		else
 			echo json_encode([
 				'status' => true, 
-				 'type' => 'restaurant',
-				'name' => $this->session->userdata('rst_name')
+				 'type' => 1,
+				'name' => $this->session->userdata('rst_name'),
+				'location' => $this->session->userdata('rst_loc')
 			]);
 	}
 

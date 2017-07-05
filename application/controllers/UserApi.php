@@ -25,8 +25,9 @@ class UserApi extends BaseApi {
 		$pwd = $this->input->post('password');
 		$res = $this->user->login($acc, $pwd);
 		if ($res){
-			$id = $this->db->select('id')->where('name', $acc)->get('user')->result_array();
+			$id = $this->db->select(['id', 'location'])->where('name', $acc)->get('user')->result_array();
 			$this->session->set_userdata('user_id', $id[0]['id']);
+			$this->session->set_userdata('user_loc', $id[0]['location']);
 			$this->session->set_userdata('user_name', $acc);
 			$info = $this->db->select(['name', 'gender', 'telephone', 'address', 'e-mail', 'time', 'location'])->where('id',$id[0]['id'])->get('user')->result_array();
 			echo json_encode(['status' => true, 'userdata' => $info[0]]);
@@ -35,6 +36,8 @@ class UserApi extends BaseApi {
 
 	public function logout(){
 		$this->session->set_userdata('user_id', null);
+		$this->session->set_userdata('user_name', null);
+		$this->session->set_userdata('user_loc', null);
 		echo json_encode(['status' => true]);
 	}
 
@@ -59,8 +62,9 @@ class UserApi extends BaseApi {
 			echo json_encode(['status' => false, 'msg' => 'account already exists']);
 			return;
 		}
-		$id = $this->db->select('id')->where('name', $acc)->get('user')->result_array();
+		$id = $this->db->select(['id', 'location'])->where('name', $acc)->get('user')->result_array();
 		$this->session->set_userdata('user_id', $id[0]['id']);
+		$this->session->set_userdata('user_loc', $id[0]['location']);
 		$this->session->set_userdata('user_name', $acc);
 		echo json_encode(['status' => true]);
 	}
@@ -107,6 +111,8 @@ class UserApi extends BaseApi {
 		$mail = $this->input->post('e-mail');
 		$loc = $this->input->post('location');
 		$this->user->updateInfo($id, ['name' => $name, 'gender' => $gen, 'telephone' => $tel, 'address' => $addr, 'e-mail' => $mail, 'location' => $loc]);
+		$this->session->set_userdata('user_name', $name);
+		$this->session->set_userdata('user_loc', $loc);
 		echo json_encode(['status' => true]);
 	}
 
