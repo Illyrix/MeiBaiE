@@ -217,6 +217,7 @@ class RestaurantApi extends BaseApi {
 		$res = [];
 		$dish = [];
 		$arr = $this->db->select(['order_id', 'user.name as u_name', 'orders.telephone', 'orders.address', 'orders.time', 'orders.price as total_price', 'postscript', 'comment', 'menu.name', 'order_menu.amount', 'status'])->get()->result_array();
+		$this->session->set_userdata('latest_order', $arr[0]['order_id']);
 		foreach ($arr as $or){
 			$order_id = $or['order_id'];
 			$dish[$order_id][] = ['name' => $or['name'], 'amount' => $or['amount']];
@@ -266,6 +267,12 @@ class RestaurantApi extends BaseApi {
 				unset($com[$order_id]['status']);
 			}
 		}
+		$res['new'] = [];
+		$res['canceled'] = [];
+		$res['accepted'] = [];
+		$res['rejected'] = [];
+		$res['uncommented'] = [];
+		$res['completed'] = [];
 		foreach ($new as $i){
 			$res['new'][] = $i;
 		}
@@ -363,6 +370,26 @@ class RestaurantApi extends BaseApi {
    * poll this method to check if there are new orders
    */
 	public function checkNewOrders() {
-
+		if (is_null($this->session->userdata('rst_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
+			return;
+		}
+		$rst_id = $this->session->userdata('rst_id');
+		$this->db->from('orders');
+		$this->db->join('user', 'user.id = orders.user_id');
+		$this->db->join('order_menu', 'order_menu.order_id = orders.id');
+		$this->db->join('menu', 'menu.id = order_menu.food_id');
+		$this->db->where('orders.rst_id', $rst_id);
+		$this->db->where('menu.rst_id', $rst_id);
+		$this->db->order_by('orders.id', 'DESC');
+		$arr = $this->db->select(['order_id', 'user.name as u_name', 'orders.telephone', 'orders.address', 'orders.time', 'orders.price as total_price', 'postscript', 'comment', 'menu.name', 'order_menu.amount', 'status'])->get()->result_array();
+		$res = [];
+		foreach ($arr as $or){
+			$order_id = $or['order_id'];
+			if ($order_id > $this->session->userdata('latest_order')){
+				$dish[$order_id][] = ['name' => $or['name'], 'amount' => $or['amount']];
+			}else break;
+		}
+		
 	}
 }
