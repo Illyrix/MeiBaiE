@@ -47,6 +47,7 @@ class Restaurant extends CI_Model{
   }
 
   public function updateInfo($id, $arr) {
+    
     $this->db->where('id', $id);
     $this->db->update('restaurant', $arr);
   }

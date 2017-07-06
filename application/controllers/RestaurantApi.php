@@ -77,12 +77,18 @@ class RestaurantApi extends BaseApi {
 		}
 		$id = $this->session->userdata('rst_id');
 		$name = $this->input->post('name');
+		$pwd = $this->input->post('password');
+		if (empty(trim($name)) || empty(trim($pwd))){
+			echo json_encode(['status' => false]);
+			return;
+		}
+		$password = password_hash($pwd, PASSWORD_BCRYPT);
 		$tel = $this->input->post('telephone');
 		$addr = $this->input->post('address');
 		$loc = $this->input->post('location');
 		$ot = $this->input->post('open_time');
 		$ct = $this->input->post('close_time');
-		$this->restaurant->updateInfo($id, ['name' => $name, 'telephone' => $tel, 'address' => $addr, 'location' => $loc, 'open_time' => $ot, 'close_time' => $ct]);
+		$this->restaurant->updateInfo($id, ['name' => $name, 'password' => $password, 'telephone' => $tel, 'address' => $addr, 'location' => $loc, 'open_time' => $ot, 'close_time' => $ct]);
 		$this->session->set_userdata('rst_name', $name);
 		$this->session->set_userdata('rst_loc', $loc);
 		$this->do_upload();
@@ -100,7 +106,19 @@ class RestaurantApi extends BaseApi {
 	}
 
 	public function updateDishes(){
-		
+		if (is_null($this->session->userdata('rst_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
+			return;
+		}
+		$id = $this->session->userdata('rst_id');
+		$dish = $this->input->post('dish');
+		$food_id = $this->db->select('namw')->where('rst_id', $id)->where('id', $dish['id'])->get('menu')->result_array();
+		if (empty($food_id)){
+			echo json_encode(['status' => false]);
+      		return false;
+    	}
+		$this->restaurant->updateDishes($dish);
+		echo json_encode(['status' => true]);
 	}
 
   /**
