@@ -229,42 +229,36 @@ class RestaurantApi extends BaseApi {
 				$new[$order_id] = $or;
 				unset($new[$order_id]['name']);
 				unset($new[$order_id]['amount']);
-				unset($new[$order_id]['status']);
 			}
 			if ($or['status'] == 1 && @is_null($can[$order_id])){
 				$or['dishes'] = $dish[$order_id];
 				$can[$order_id] = $or;
 				unset($can[$order_id]['name']);
 				unset($can[$order_id]['amount']);
-				unset($can[$order_id]['status']);
 			}
 			if ($or['status'] == 2 && @is_null($acc[$order_id])){
 				$or['dishes'] = $dish[$order_id];
 				$acc[$order_id] = $or;
 				unset($acc[$order_id]['name']);
 				unset($acc[$order_id]['amount']);
-				unset($acc[$order_id]['status']);
 			}
 			if ($or['status'] == 3 && @is_null($rej[$order_id])){
 				$or['dishes'] = $dish[$order_id];
 				$rej[$order_id] = $or;
 				unset($rej[$order_id]['name']);
 				unset($rej[$order_id]['amount']);
-				unset($rej[$order_id]['status']);
 			}
 			if ($or['status'] == 4 && @is_null($uncom[$order_id])){
 				$or['dishes'] = $dish[$order_id];
 				$uncom[$order_id] = $or;
 				unset($uncom[$order_id]['name']);
 				unset($uncom[$order_id]['amount']);
-				unset($uncom[$order_id]['status']);
 			}
 			if ($or['status'] == 5 && @is_null($com[$order_id])){
 				$or['dishes'] = $dish[$order_id];
 				$com[$order_id] = $or;
 				unset($com[$order_id]['name']);
 				unset($com[$order_id]['amount']);
-				unset($com[$order_id]['status']);
 			}
 		}
 		$res['new'] = [];
