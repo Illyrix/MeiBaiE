@@ -378,11 +378,12 @@ class RestaurantApi extends BaseApi {
 		$this->db->order_by('orders.id', 'DESC');
 		$arr = $this->db->select(['order_id', 'user.name as u_name', 'orders.telephone', 'orders.address', 'orders.time', 'orders.price as total_price', 'postscript', 'comment', 'menu.name', 'order_menu.amount', 'status'])->get()->result_array();
 		$res = [];
+		$arr = [];
 		$la = $this->session->userdata('latest_order');
 		if ($arr[0]['order_id'] > $la)
 			$this->session->set_userdata('latest_order', $arr[0]['order_id']);
 		else {
-			echo json_encode($res);
+			echo json_encode($arr);
 			return;
 		}
 		foreach ($arr as $or){
@@ -401,7 +402,10 @@ class RestaurantApi extends BaseApi {
 					$res[$order_id] = $or;
 				}
 			}else{
-				echo json_encode($res);
+				foreach ($res as $r){
+					$arr[] = $r;
+				}
+				echo json_encode($arr);
 				return;
 			}
 		}
