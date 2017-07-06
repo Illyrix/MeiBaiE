@@ -56,6 +56,15 @@ class Restaurant extends CI_Model{
     $this->db->update('menu', $dish);
   }
 
+  public function addDish($dish) {
+    $this->db->insert('menu', $dish);
+  }
+
+  public function deleteDish($id) {
+    $this->db->where('id', $id);
+    $this->db->delete('menu');
+  }
+
   public function changeOrder($id, $type) {
     $this->db->where('id', $id);
     $this->db->update('orders', ['status' => $type]);

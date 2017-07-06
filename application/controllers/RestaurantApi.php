@@ -130,6 +130,39 @@ class RestaurantApi extends BaseApi {
 		echo json_encode(['status' => true]);
 	}
 
+	public function addDish(){
+		if (is_null($this->session->userdata('rst_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
+			return;
+		}
+		$rst_id = $this->session->userdata('rst_id');
+		$d = $this->input->post('dish');
+		$dish = json_decode($d, true);
+		$dish['rst_id'] = $rst_id;
+		$this->restaurant->addDish($dish);
+		echo json_encode(['status' => true]);
+	}
+
+	public function deleteDish(){
+		if (is_null($this->session->userdata('rst_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
+			return;
+		}
+		$rst_id = $this->session->userdata('rst_id');
+		$id = $this->input->post('id');
+		$arr = $this->db->select('rst_id')->where('id', $id)->get('menu')->result_array();
+    	if ($arr === []){
+			echo json_encode(['status' => false, 'msg' => 'no such dish']);
+			return;
+		}
+		if ($arr[0]['rst_id'] != $rst_id){
+			echo json_encode(['status' => false, 'msg' => 'incorrect user']);
+			return;
+		}
+		$this->restaurant->deleteDish($id);
+		echo json_encode(['status' => true]);
+	}
+
 	public function upload() {
 		if (is_null($this->session->userdata('rst_id'))) {
 			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
@@ -183,7 +216,7 @@ class RestaurantApi extends BaseApi {
 		$com = [];
 		$res = [];
 		$dish = [];
-		$arr = $this->db->select(['order_id', 'user.name as u_name', 'orders.telephone', 'orders.address', 'orders.time', 'postscript', 'comment', 'menu.name', 'order_menu.amount', 'status'])->get()->result_array();
+		$arr = $this->db->select(['order_id', 'user.name as u_name', 'orders.telephone', 'orders.address', 'orders.time', 'orders.price as total_price', 'postscript', 'comment', 'menu.name', 'order_menu.amount', 'status'])->get()->result_array();
 		foreach ($arr as $or){
 			$order_id = $or['order_id'];
 			$dish[$order_id][] = ['name' => $or['name'], 'amount' => $or['amount']];
