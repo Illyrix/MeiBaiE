@@ -126,6 +126,33 @@ class RestaurantApi extends BaseApi {
 		echo json_encode(['status' => true]);
 	}
 
+	public function upload() {
+		if (is_null($this->session->userdata('rst_id'))) {
+			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
+			return;
+		}
+
+		$config['upload_path']      = './uploads/';
+    $config['allowed_types']    = 'gif|jpg|png';
+    $config['max_size']     = 1024;
+    $config['max_width']        = 1024;
+    $config['max_height']       = 768;
+		$config['encrypt_name'] = true;
+
+    $this->load->library('upload');
+		$this->upload->initialize($config);
+
+    if ( ! $this->upload->do_upload('picture'))
+    {
+        echo json_encode(array('status' => false, 'error' => $this->upload->display_errors('', '')));
+    }
+    else
+    {
+			$data = $this->upload->data();
+			echo json_encode(['status'=>true, 'url'=>('http://localhost/MeiBaiE/uploads/'.$data['file_name'])]);
+    }
+	}
+
   /**
    * Return new orders, reject orders, accept orders
    */
