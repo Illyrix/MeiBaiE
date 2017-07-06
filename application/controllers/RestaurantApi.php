@@ -110,14 +110,19 @@ class RestaurantApi extends BaseApi {
 			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
 			return;
 		}
-		$id = $this->session->userdata('rst_id');
-		$dish = $this->input->post('dish');
-		$food_id = $this->db->select('namw')->where('rst_id', $id)->where('id', $dish['id'])->get('menu')->result_array();
-		if (empty($food_id)){
+		$rst_id = $this->session->userdata('rst_id');
+		$d = $this->input->post('dish');
+		$dish = json_decode($d, true);
+		$id = $dish['id'];
+		$this->db->where('rst_id', $rst_id);
+		$this->db->where('id', $id);
+		$check = $this->db->select('name')->get('menu')->result_array();
+		if (empty($check)){
 			echo json_encode(['status' => false]);
       		return false;
     	}
-		$this->restaurant->updateDishes($dish);
+		$arr = ['name' => $dish['name'], 'picture' => $dish['picture'], 'discount' => $dish['discount'], 'price' => $dish['price'], 'rst_id' => $rst_id];
+		$this->restaurant->updateDishes($id, $arr);
 		echo json_encode(['status' => true]);
 	}
 
