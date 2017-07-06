@@ -78,20 +78,24 @@ class RestaurantApi extends BaseApi {
 		$id = $this->session->userdata('rst_id');
 		$name = $this->input->post('name');
 		$pwd = $this->input->post('password');
-		if (empty(trim($name)) || empty(trim($pwd))){
+		if (empty(trim($name))){
 			echo json_encode(['status' => false]);
 			return;
 		}
-		$password = password_hash($pwd, PASSWORD_BCRYPT);
+		if (empty(trim($pwd))){
+			$pwd = $this->db->select('password')->where('id', $id)->get('restaurant')->result_array();
+			$password = $pwd[0]['password'];
+		}
+		else $password = password_hash($pwd, PASSWORD_BCRYPT);
 		$tel = $this->input->post('telephone');
 		$addr = $this->input->post('address');
+		$pic = $this->input->post('picture');
 		$loc = $this->input->post('location');
 		$ot = $this->input->post('open_time');
 		$ct = $this->input->post('close_time');
-		$this->restaurant->updateInfo($id, ['name' => $name, 'password' => $password, 'telephone' => $tel, 'address' => $addr, 'location' => $loc, 'open_time' => $ot, 'close_time' => $ct]);
+		$this->restaurant->updateInfo($id, ['name' => $name, 'password' => $password, 'picture' => $pic, 'telephone' => $tel, 'address' => $addr, 'location' => $loc, 'open_time' => $ot, 'close_time' => $ct]);
 		$this->session->set_userdata('rst_name', $name);
 		$this->session->set_userdata('rst_loc', $loc);
-		$this->do_upload();
 		echo json_encode(['status' => true]);
 	}
 
@@ -134,9 +138,30 @@ class RestaurantApi extends BaseApi {
 			echo json_encode(['status' => false, 'msg' => 'no user logged in']);
 			return;
 		}
-		$id = $this->session->userdata('rst_id');
-		$arr = $this->db->select(['id', 'user_id', 'telephone', 'address', 'price', 'discount'])->where('rst_id',$id)->get('orders')->result_array();
-		
+		$rst_id = $this->session->userdata('rst_id');
+		// $orders = $this->db->select('*')->where('rst_id', $rst_id)->get('orders');
+		// echo json_encode($orders);
+		$this->db->from('orders');
+		$this->db->join('user', 'user.id = orders.user_id');
+		$this->db->join('order_menu', 'order_menu.order_id = orders.id');
+		$this->db->join('menu', 'menu.id = order_menu.food_id');
+		$this->db->where('orders.rst_id', $rst_id);
+		$this->db->where('menu.rst_id', $rst_id);
+		$this->db->order_by('orders.id', 'DESC');
+		$new = [];
+		$acc = [];
+		$can = [];
+		$rej = [];
+		$uncom = [];
+		$com = [];
+		$res = [];
+		$arr = $this->db->select('*')->get()->result_array();
+		foreach ($arr as $dish){
+			if ($dish['status'] == 3){
+				$new = array_merge($new, $dish);
+			}
+		}
+		echo json_encode($new);
 	}
 
 	public function acceptOrder() {
