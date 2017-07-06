@@ -137,13 +137,13 @@ class RestaurantApi extends BaseApi {
 		}
 
 		$config['upload_path']      = './uploads/';
-    $config['allowed_types']    = 'gif|jpg|png';
-    $config['max_size']     = 1024;
-    $config['max_width']        = 1024;
-    $config['max_height']       = 768;
+    	$config['allowed_types']    = 'gif|jpg|png';
+    	$config['max_size']     = 1024;
+    	$config['max_width']        = 1024;
+    	$config['max_height']       = 768;
 		$config['encrypt_name'] = true;
 
-    $this->load->library('upload');
+    	$this->load->library('upload');
 		$this->upload->initialize($config);
 
     if ( ! $this->upload->do_upload('picture'))
@@ -182,13 +182,76 @@ class RestaurantApi extends BaseApi {
 		$uncom = [];
 		$com = [];
 		$res = [];
-		$arr = $this->db->select('*')->get()->result_array();
-		foreach ($arr as $dish){
-			if ($dish['status'] == 3){
-				$new = array_merge($new, $dish);
+		$dish = [];
+		$arr = $this->db->select(['order_id', 'user.name as u_name', 'orders.telephone', 'orders.address', 'orders.time', 'postscript', 'comment', 'menu.name', 'order_menu.amount', 'status'])->get()->result_array();
+		foreach ($arr as $or){
+			$order_id = $or['order_id'];
+			$dish[$order_id][] = ['name' => $or['name'], 'amount' => $or['amount']];
+		}
+		foreach ($arr as $or){
+			$order_id = $or['order_id'];
+			if ($or['status'] == 0 && @is_null($new[$order_id])){
+				$or['dishes'] = $dish[$order_id];
+				$new[$order_id] = $or;
+				unset($new[$order_id]['name']);
+				unset($new[$order_id]['amount']);
+				unset($new[$order_id]['status']);
+			}
+			if ($or['status'] == 1 && @is_null($can[$order_id])){
+				$or['dishes'] = $dish[$order_id];
+				$can[$order_id] = $or;
+				unset($can[$order_id]['name']);
+				unset($can[$order_id]['amount']);
+				unset($can[$order_id]['status']);
+			}
+			if ($or['status'] == 2 && @is_null($acc[$order_id])){
+				$or['dishes'] = $dish[$order_id];
+				$acc[$order_id] = $or;
+				unset($acc[$order_id]['name']);
+				unset($acc[$order_id]['amount']);
+				unset($acc[$order_id]['status']);
+			}
+			if ($or['status'] == 3 && @is_null($rej[$order_id])){
+				$or['dishes'] = $dish[$order_id];
+				$rej[$order_id] = $or;
+				unset($rej[$order_id]['name']);
+				unset($rej[$order_id]['amount']);
+				unset($rej[$order_id]['status']);
+			}
+			if ($or['status'] == 4 && @is_null($uncom[$order_id])){
+				$or['dishes'] = $dish[$order_id];
+				$uncom[$order_id] = $or;
+				unset($uncom[$order_id]['name']);
+				unset($uncom[$order_id]['amount']);
+				unset($uncom[$order_id]['status']);
+			}
+			if ($or['status'] == 5 && @is_null($com[$order_id])){
+				$or['dishes'] = $dish[$order_id];
+				$com[$order_id] = $or;
+				unset($com[$order_id]['name']);
+				unset($com[$order_id]['amount']);
+				unset($com[$order_id]['status']);
 			}
 		}
-		echo json_encode($new);
+		foreach ($new as $i){
+			$res['new'][] = $i;
+		}
+		foreach ($can as $i){
+			$res['canceled'][] = $i;
+		}
+		foreach ($acc as $i){
+			$res['accepted'][] = $i;
+		}
+		foreach ($rej as $i){
+			$res['rejected'][] = $i;
+		}
+		foreach ($uncom as $i){
+			$res['uncommented'][] = $i;
+		}
+		foreach ($com as $i){
+			$res['completed'][] = $i;
+		}
+		echo json_encode($res);
 	}
 
 	public function acceptOrder() {
